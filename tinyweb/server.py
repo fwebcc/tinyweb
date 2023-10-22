@@ -24,21 +24,15 @@ IS_UASYNCIO_V3 = hasattr(asyncio, "__version__") and asyncio.__version__ >= (3,)
 
 
 def urldecode_plus(s):
-    """Decode urlencoded string (including '+' char).
-
-    Returns decoded string
-    """
-    s = s.replace('+', ' ')
-    arr = s.split('%')
-    res = arr[0]
-    for it in arr[1:]:
-        if len(it) >= 2:
-            res += chr(int(it[:2], 16)) + it[2:]
-        elif len(it) == 0:
-            res += '%'
-        else:
-            res += it
-    return res
+ """Decode urlencoded string (including '+' char).
+ Returns decoded string支持中文不乱码
+ """
+ if "%" in s:
+    res=''.join(i for i in s.split('%'))
+    res= bytes.fromhex(res).decode('utf-8')
+ else:
+    res=s          
+ return res
 
 
 def parse_query_string(s):
